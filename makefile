@@ -1,4 +1,4 @@
-DAY ?= 3
+DAY ?= 4
 YEAR ?= 2023
 
 DIST := ./dist
