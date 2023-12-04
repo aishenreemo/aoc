@@ -101,56 +101,46 @@ void expect_line(struct line_t *line, char const *input, int *index) {
 		if (isdigit(input[*index])) {
 			expr->variant = EXPR_NUMBER;
 			expr->digit = input[*index] - '0';
-			*index += 1;
 			vector_push(&line->expressions, expr);
 		} else if (strncmp(input + *index, "one", strlen("one")) == 0) {
 			expr->variant = EXPR_WORD_NUMBER;
 			expr->digit = 1;
-			*index += strlen("one");
 			vector_push(&line->expressions, expr);
 		} else if (strncmp(input + *index, "two", strlen("two")) == 0) {
 			expr->variant = EXPR_WORD_NUMBER;
 			expr->digit = 2;
-			*index += strlen("two");
 			vector_push(&line->expressions, expr);
 		} else if (strncmp(input + *index, "three", strlen("three")) == 0) {
 			expr->variant = EXPR_WORD_NUMBER;
 			expr->digit = 3;
-			*index += strlen("three");
 			vector_push(&line->expressions, expr);
 		} else if (strncmp(input + *index, "four", strlen("four")) == 0) {
 			expr->variant = EXPR_WORD_NUMBER;
 			expr->digit = 4;
-			*index += strlen("four");
 			vector_push(&line->expressions, expr);
 		} else if (strncmp(input + *index, "five", strlen("five")) == 0) {
 			expr->variant = EXPR_WORD_NUMBER;
 			expr->digit = 5;
-			*index += strlen("five");
 			vector_push(&line->expressions, expr);
 		} else if (strncmp(input + *index, "six", strlen("six")) == 0) {
 			expr->variant = EXPR_WORD_NUMBER;
 			expr->digit = 6;
-			*index += strlen("six");
 			vector_push(&line->expressions, expr);
 		} else if (strncmp(input + *index, "seven", strlen("seven")) == 0) {
 			expr->variant = EXPR_WORD_NUMBER;
 			expr->digit = 7;
-			*index += strlen("seven");
 			vector_push(&line->expressions, expr);
 		} else if (strncmp(input + *index, "eight", strlen("eight")) == 0) {
 			expr->variant = EXPR_WORD_NUMBER;
 			expr->digit = 8;
-			*index += strlen("eight");
 			vector_push(&line->expressions, expr);
 		} else if (strncmp(input + *index, "nine", strlen("nine")) == 0) {
 			expr->variant = EXPR_WORD_NUMBER;
 			expr->digit = 9;
-			*index += strlen("nine");
 			vector_push(&line->expressions, expr);
-		} else {
-			*index += 1;
 		}
+
+		*index += 1;
 	}
 
 	*index += 1;
