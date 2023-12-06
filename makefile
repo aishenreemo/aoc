@@ -1,4 +1,4 @@
-DAY ?= 5
+DAY ?= 6
 YEAR ?= 2023
 
 DIST := ./dist
@@ -6,7 +6,7 @@ INCLUDE := ./include
 INPUT := ./include
 
 FLAGS := -I$(INCLUDE)
-LIBS := -lcollections
+LIBS := -lcollections -lm
 
 INPUT := $(YEAR)/input_$(shell printf %02d $(DAY)).txt
 SOURCE := $(YEAR)/day_$(shell printf %02d $(DAY))
