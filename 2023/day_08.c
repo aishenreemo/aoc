@@ -1,4 +1,4 @@
-#include <libcollections/vector.h>
+#include <libcollections/vec.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -22,9 +22,9 @@ struct node_t {
 };
 
 
-static struct vector_t commands;
-static struct vector_t definitions;
-static struct vector_t nodes;
+static struct vec_t commands;
+static struct vec_t definitions;
+static struct vec_t nodes;
 
 static char *input;
 static int input_length;
@@ -44,7 +44,7 @@ void expect_part_2_nodes();
 void expect_char(char ch);
 
 uint64_t gcd(uint64_t a, uint64_t b);
-uint64_t lcm(struct vector_t numbers);
+uint64_t lcm(struct vec_t numbers);
 
 
 static bool part_1_check(struct node_t *node) {
@@ -62,9 +62,9 @@ int main(void) {
 	input = load_file("2023/input_08.txt");
 	input_length = strlen(input);
 
-	vector_init(&commands, sizeof(enum command_t));
-	vector_init(&definitions, sizeof(struct node_t));
-	vector_init(&nodes, sizeof(struct node_t));
+	vec_init(&commands, sizeof(enum command_t));
+	vec_init(&definitions, sizeof(struct node_t));
+	vec_init(&nodes, sizeof(struct node_t));
 
 	expect_commands();
 	expect_definitions();
@@ -74,9 +74,9 @@ int main(void) {
 	printf("part 1: %ld\n", steps_to_z(hashmap + hash("AAA"), part_1_check));
 	printf("part 2: %ld\n", lcm_of_nodes_steps_to_z());
 
-	vector_drop(&commands);
-	vector_drop(&definitions);
-	vector_drop(&nodes);
+	vec_drop(&commands);
+	vec_drop(&definitions);
+	vec_drop(&nodes);
 
 	return EXIT_SUCCESS;
 }
@@ -85,7 +85,7 @@ int main(void) {
 void hashmap_init() {
 	memset(hashmap, 0, sizeof(struct node_t) * UINT16_MAX);
 	for (int i = 0; i < definitions.length; i++) {
-		struct node_t *node = vector_get(&definitions, i);
+		struct node_t *node = vec_get(&definitions, i);
 		memcpy(hashmap + hash(node->ident), node, sizeof(struct node_t));
 	}
 }
@@ -111,12 +111,12 @@ uint64_t gcd(uint64_t a, uint64_t b) {
 }
 
 
-uint64_t lcm(struct vector_t numbers) {
-	uint64_t *first = vector_get(&numbers, 0);
+uint64_t lcm(struct vec_t numbers) {
+	uint64_t *first = vec_get(&numbers, 0);
 	uint64_t lcm_value = *first;
 
 	for (int i = 1; i < numbers.length; i++) {
-		uint64_t *number = vector_get(&numbers, i);
+		uint64_t *number = vec_get(&numbers, i);
 		lcm_value *= *number / gcd(lcm_value, *number);
 	}
 
@@ -132,7 +132,7 @@ uint64_t steps_to_z(struct node_t *node, bool (*is_end)(struct node_t *node)) {
 	memcpy(&node_proxy, node, sizeof(struct node_t));
 
 	while (!is_end(&node_proxy)) {
-		enum command_t *command = vector_get(&commands, index);
+		enum command_t *command = vec_get(&commands, index);
 		char *ident = *command == CMD_LEFT ? node_proxy.left : node_proxy.right;
 
 		memcpy(&node_proxy, hashmap + hash(ident), sizeof(struct node_t));
@@ -147,17 +147,17 @@ uint64_t steps_to_z(struct node_t *node, bool (*is_end)(struct node_t *node)) {
 
 
 uint64_t lcm_of_nodes_steps_to_z() {
-	struct vector_t steps_arr;
-	vector_init(&steps_arr, sizeof(uint64_t));
+	struct vec_t steps_arr;
+	vec_init(&steps_arr, sizeof(uint64_t));
 
 	for (int i = 0; i < nodes.length; i++) {
-		struct node_t *node = vector_get(&nodes, i);
+		struct node_t *node = vec_get(&nodes, i);
 		uint64_t steps = steps_to_z(node, part_2_check);
-		vector_push(&steps_arr, &steps);
+		vec_push(&steps_arr, &steps);
 	}
 
 	uint64_t lcm_value = lcm(steps_arr);
-	vector_drop(&steps_arr);
+	vec_drop(&steps_arr);
 
 	return lcm_value;
 }
@@ -165,9 +165,9 @@ uint64_t lcm_of_nodes_steps_to_z() {
 
 void expect_part_2_nodes() {
 	for (int i = 0; i < definitions.length; i++) {
-		struct node_t *node = vector_get(&definitions, i);
+		struct node_t *node = vec_get(&definitions, i);
 		if (node->ident[2] != 'A') continue;
-		vector_push(&nodes, node);
+		vec_push(&nodes, node);
 	}
 }
 
@@ -177,10 +177,10 @@ void expect_commands() {
 		enum command_t command;
 		if (input[cursor] == 'L') {
 			command = CMD_LEFT;
-			vector_push(&commands, &command);
+			vec_push(&commands, &command);
 		} else if (input[cursor] == 'R') {
 			command = CMD_RIGHT;
-			vector_push(&commands, &command);
+			vec_push(&commands, &command);
 		}
 
 		cursor += 1;
@@ -206,7 +206,7 @@ void expect_definitions() {
 		strncpy(node.right, input + cursor, 3);
 		node.right[3] = '\0';
 		expect_char('\n');
-		vector_push(&definitions, &node);
+		vec_push(&definitions, &node);
 	}
 }
 

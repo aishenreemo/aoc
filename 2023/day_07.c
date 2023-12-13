@@ -1,4 +1,4 @@
-#include <libcollections/vector.h>
+#include <libcollections/vec.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -49,7 +49,7 @@ static char *input;
 static int input_length;
 static int cursor;
 
-static struct vector_t hands;
+static struct vec_t hands;
 
 
 void sort_hands(bool is_part_2);
@@ -66,12 +66,12 @@ int main() {
 	input = load_file("2023/input_07.txt");
 	input_length = strlen(input);
 
-	vector_init(&hands, sizeof(struct hand_t));
+	vec_init(&hands, sizeof(struct hand_t));
 	while (cursor < input_length) {
 		struct hand_t hand;
 		memset(&hand, 0, sizeof(struct hand_t));
 		expect_hand(&hand);
-		vector_push(&hands, &hand);
+		vec_push(&hands, &hand);
 	}
 
 	int part_1_total = 0;
@@ -80,21 +80,21 @@ int main() {
 	// sort part 1
 	sort_hands(false);
 	for (int i = 0; i < hands.length; i++) {
-		struct hand_t *hand = vector_get(&hands, i);
+		struct hand_t *hand = vec_get(&hands, i);
 		part_1_total += (i + 1) * hand->bid;
 	}
 
 	// sort part 2
 	sort_hands(true);
 	for (int i = 0; i < hands.length; i++) {
-		struct hand_t *hand = vector_get(&hands, i);
+		struct hand_t *hand = vec_get(&hands, i);
 		part_2_total += (i + 1) * hand->bid;
 	}
 
 	printf("part 1: %d\n", part_1_total);
 	printf("part 2: %d\n", part_2_total);
 
-	vector_drop(&hands);
+	vec_drop(&hands);
 	free(input);
 
 	return EXIT_SUCCESS;
@@ -103,13 +103,13 @@ int main() {
 
 void sort_hands(bool is_part_2) {
 	for (int i = 0; i < hands.length; i++) {
-		struct hand_t *hand = vector_get(&hands, i);
+		struct hand_t *hand = vec_get(&hands, i);
 
 		struct hand_t *lowest_hand = hand;
 		int lowest_hand_index = i;
 
 		for (int j = i + 1; j < hands.length; j++) {
-			struct hand_t *local_hand = vector_get(&hands, j);
+			struct hand_t *local_hand = vec_get(&hands, j);
 
 			if (is_lower_hand(lowest_hand, local_hand, is_part_2)) continue;
 

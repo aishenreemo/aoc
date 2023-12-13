@@ -1,4 +1,4 @@
-#include <libcollections/vector.h>
+#include <libcollections/vec.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -8,8 +8,8 @@
 #include "macros.h"
 
 
-static struct vector_t times;
-static struct vector_t distances;
+static struct vec_t times;
+static struct vec_t distances;
 static uint64_t concatenated_time;
 static uint64_t concatenated_distance;
 
@@ -31,16 +31,16 @@ int main(void) {
 	concatenated_time = 0;
 	concatenated_distance = 0;
 
-	vector_init(&times, sizeof(int));
-	vector_init(&distances, sizeof(int));
+	vec_init(&times, sizeof(int));
+	vec_init(&distances, sizeof(int));
 
 	expect_times();
 	expect_distances();
 
 	int margin_of_error = 1;
 	for (int i = 0; i < times.length; i++) {
-		int *time = vector_get(&times, i);
-		int *distance = vector_get(&distances, i);
+		int *time = vec_get(&times, i);
+		int *distance = vec_get(&distances, i);
 
 		int count = 0;
 		for (int j = 1; j < *time; j++) {
@@ -68,8 +68,8 @@ int main(void) {
 	printf("part 1: %d\n", margin_of_error);
 	printf("part 2: %ld\n", margin_of_error_1);
 
-	vector_drop(&times);
-	vector_drop(&distances);
+	vec_drop(&times);
+	vec_drop(&distances);
 	free(input);
 
 	return EXIT_SUCCESS;
@@ -81,7 +81,7 @@ void expect_times() {
 		if (isdigit(input[cursor])) {
 			int number;
 			expect_number(&number);
-			vector_push(&times, &number);
+			vec_push(&times, &number);
 			continue;
 		}
 
@@ -97,7 +97,7 @@ void expect_distances() {
 		if (isdigit(input[cursor])) {
 			int number;
 			expect_number(&number);
-			vector_push(&distances, &number);
+			vec_push(&distances, &number);
 		}
 
 		cursor += 1;

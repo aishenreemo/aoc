@@ -1,4 +1,4 @@
-#include <libcollections/vector.h>
+#include <libcollections/vec.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -79,7 +79,7 @@ bool is_part_number(union expr_t *expr);
 bool get_gear_part_numbers(union expr_t *sym_expr, union expr_t part_gears[2]);
 
 struct position_t position;
-struct vector_t expressions;
+struct vec_t expressions;
 
 
 int main(void) {
@@ -87,24 +87,24 @@ int main(void) {
 	uint const input_len = strlen(input);
 
 	memset(&position, 0, sizeof(struct position_t));
-	vector_init(&expressions, sizeof(union expr_t));
+	vec_init(&expressions, sizeof(union expr_t));
 
 	while (position.index < input_len) {
 		union expr_t expr;
 		expect_expr(&expr, &position, input);
-		vector_push(&expressions, &expr);
+		vec_push(&expressions, &expr);
 	}
 
 	int part_1_total = 0;
 	for (int i = 0; i < expressions.length; i++) {
-		union expr_t *expr = vector_get(&expressions, i);
+		union expr_t *expr = vec_get(&expressions, i);
 		if (!is_part_number(expr)) continue;
 		part_1_total += expr->number.value;
 	}
 
 	int part_2_total = 0;
 	for (int i = 0; i < expressions.length; i++) {
-		union expr_t *expr = vector_get(&expressions, i);
+		union expr_t *expr = vec_get(&expressions, i);
 		union expr_t part_gears[2];
 		memset(part_gears, 0, sizeof(union expr_t) * 2);
 
@@ -115,7 +115,7 @@ int main(void) {
 	printf("part 1 total: %d\n", part_1_total);
 	printf("part 2 total: %d\n", part_2_total);
 
-	vector_drop(&expressions);
+	vec_drop(&expressions);
 	free(input);
 }
 
@@ -126,7 +126,7 @@ bool get_gear_part_numbers(union expr_t *sym_expr, union expr_t part_gears[2]) {
 
 	int part_gear_count = 0;
 	for (int i = 0; i < expressions.length; i++) {
-		union expr_t *expr = vector_get(&expressions, i);
+		union expr_t *expr = vec_get(&expressions, i);
 
 		if (expr->variant != EXPR_NUMBER) continue;
 		if (sym_expr->symbol.y > expr->number.y + 1) continue;
@@ -156,7 +156,7 @@ bool is_part_number(union expr_t *num_expr) {
 	if (num_expr->variant != EXPR_NUMBER) return false;
 
 	for (int i = 0; i < expressions.length; i++) {
-		union expr_t *expr = vector_get(&expressions, i);
+		union expr_t *expr = vec_get(&expressions, i);
 
 		if (expr->symbol.y > num_expr->number.y + 1) break;
 		if (expr->variant != EXPR_SYMBOL) continue;

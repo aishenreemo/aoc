@@ -1,4 +1,4 @@
-#include <libcollections/vector.h>
+#include <libcollections/vec.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -8,8 +8,8 @@
 struct line_t {
 	int card_id;
 	int count;
-	struct vector_t winning_nums;
-	struct vector_t nums;
+	struct vec_t winning_nums;
+	struct vec_t nums;
 };
 
 
@@ -17,37 +17,37 @@ void expect_line(struct line_t *line, char const *input, int *const index);
 void expect_number(int *number, char const* input, int *const index);
 
 int count_matches(struct line_t *line);
-int count_scratch_cards(struct vector_t *lines, struct line_t *line);
+int count_scratch_cards(struct vec_t *lines, struct line_t *line);
 
 int main() {
 	char *input = load_file("2023/input_04.txt");
 	uint input_len = strlen(input);
 
-	struct vector_t lines;
-	vector_init(&lines, sizeof(struct line_t));
+	struct vec_t lines;
+	vec_init(&lines, sizeof(struct line_t));
 
 	int index = 0;
 	while (index < input_len) {
 		struct line_t line;
-		vector_init(&line.winning_nums, sizeof(int));
-		vector_init(&line.nums, sizeof(int));
+		vec_init(&line.winning_nums, sizeof(int));
+		vec_init(&line.nums, sizeof(int));
 		expect_line(&line, input, &index);
-		vector_push(&lines, &line);
+		vec_push(&lines, &line);
 	}
 
 	for (int i = 0; i < lines.length; i++) {
-		struct line_t *line = vector_get(&lines, i);
+		struct line_t *line = vec_get(&lines, i);
 		printf("Card %d: ", line->card_id);
 
 		for (int j = 0; j < line->winning_nums.length; j++) {
-			int *winning_num = vector_get(&line->winning_nums, j);
+			int *winning_num = vec_get(&line->winning_nums, j);
 			printf("%d ", *winning_num);
 		}
 
 		printf("| ");
 
 		for (int j = 0; j < line->nums.length; j++) {
-			int *num = vector_get(&line->nums, j);
+			int *num = vec_get(&line->nums, j);
 			printf("%d ", *num);
 		}
 
@@ -57,7 +57,7 @@ int main() {
 	int part_1_total = 0;
 	int part_2_total = 0;
 	for (int i = 0; i < lines.length; i++) {
-		struct line_t *line = vector_get(&lines, i);
+		struct line_t *line = vec_get(&lines, i);
 
 		part_2_total += line->count;
 
@@ -75,7 +75,7 @@ int main() {
 		int part_2_max = part_2_tmp > lines.length ? lines.length : part_2_tmp;
 
 		for (int j = i + 1; j < part_2_max; j++) {
-			struct line_t *line_next = vector_get(&lines, j);
+			struct line_t *line_next = vec_get(&lines, j);
 			line_next->count += line->count;
 		}
 
@@ -85,21 +85,21 @@ int main() {
 	printf("part 2 total: %d\n", part_2_total);
 
 	for (int i = 0; i < lines.length; i++) {
-		struct line_t *line = vector_get(&lines, i);
-		vector_drop(&line->winning_nums);
-		vector_drop(&line->nums);
+		struct line_t *line = vec_get(&lines, i);
+		vec_drop(&line->winning_nums);
+		vec_drop(&line->nums);
 	}
 
-	vector_drop(&lines);
+	vec_drop(&lines);
 }
 
 int count_matches(struct line_t *line) {
 	int count = 0;
 	for (int i = 0; i < line->nums.length; i++) {
-		int *num = vector_get(&line->nums, i);
+		int *num = vec_get(&line->nums, i);
 
 		for (int j = 0; j < line->winning_nums.length; j++) {
-			int *winning_num = vector_get(&line->winning_nums, j);
+			int *winning_num = vec_get(&line->winning_nums, j);
 			if (*num != *winning_num) continue;
 
 			count += 1;
@@ -129,7 +129,7 @@ void expect_line(struct line_t *line, char const *input, int *const index) {
 		if (isdigit(input[*index])) {
 			int number;
 			expect_number(&number, input, index);
-			vector_push(&line->winning_nums, &number);
+			vec_push(&line->winning_nums, &number);
 		} else {
 			*index += 1;
 		}
@@ -139,7 +139,7 @@ void expect_line(struct line_t *line, char const *input, int *const index) {
 		if (isdigit(input[*index])) {
 			int number;
 			expect_number(&number, input, index);
-			vector_push(&line->nums, &number);
+			vec_push(&line->nums, &number);
 		} else {
 			*index += 1;
 		}

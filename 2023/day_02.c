@@ -1,4 +1,4 @@
-#include <libcollections/vector.h>
+#include <libcollections/vec.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,7 +24,7 @@ struct game_t {
 
 struct line_t {
 	struct game_t game;
-	struct vector_t cubes;
+	struct vec_t cubes;
 };
 
 
@@ -40,28 +40,28 @@ int main() {
 	char const *input = load_file("2023/input_02.txt");
 	uint const input_len = strlen(input);
 
-	struct vector_t lines;
-	vector_init(&lines, sizeof(struct line_t));
+	struct vec_t lines;
+	vec_init(&lines, sizeof(struct line_t));
 
 	int index = 0;
 	while (index < input_len) {
 		struct line_t *line = malloc(sizeof(struct line_t));
-		vector_init(&line->cubes, sizeof(struct cube_t));
+		vec_init(&line->cubes, sizeof(struct cube_t));
 		expect_line(line, input, &index);
-		vector_push(&lines, line);
+		vec_push(&lines, line);
 	}
 
 	uint part_1_total = 0;
 	uint part_2_total = 0;
 	for (int i = 0; i < lines.length; i++) {
-		struct line_t *line = vector_get(&lines, i);
+		struct line_t *line = vec_get(&lines, i);
 		printf("id: \e[32m%d\e[0m\t", line->game.id);
 
 		bool part_1_is_possible = false;
 		uint part_2_maximum_cubes[3] = { 0, 0, 0 };
 
 		for (int j = 0; j < line->cubes.length; j++) {
-			struct cube_t *cube = vector_get(&line->cubes, j);
+			struct cube_t *cube = vec_get(&line->cubes, j);
 			printf("\e[34m%d\e[0mx\e[33m%d\e[0m, ", cube->variant, cube->count);
 
 			part_1_is_possible = is_cube_possible(cube);
@@ -69,7 +69,7 @@ int main() {
 		}
 
 		for (int j = 0; j < line->cubes.length; j++) {
-			struct cube_t *cube = vector_get(&line->cubes, j);
+			struct cube_t *cube = vec_get(&line->cubes, j);
 			if (cube->count <= part_2_maximum_cubes[cube->variant - 1]) continue;
 
 			part_2_maximum_cubes[cube->variant - 1] = cube->count;
@@ -90,11 +90,11 @@ int main() {
 	printf("part 2 total: %d\n", part_2_total);
 
 	for (int i = 0; i < lines.length; i++) {
-		struct line_t *line = vector_get(&lines, i);
-		vector_drop(&line->cubes);
+		struct line_t *line = vec_get(&lines, i);
+		vec_drop(&line->cubes);
 	}
 
-	vector_drop(&lines);
+	vec_drop(&lines);
 
 	return EXIT_SUCCESS;
 }
@@ -119,7 +119,7 @@ void expect_line(struct line_t *line, char const *input, int *index) {
 		if (isdigit(input[*index])) {
 			struct cube_t *cube = malloc(sizeof(struct cube_t));
 			expect_cube(cube, input, index);
-			vector_push(&line->cubes, cube);
+			vec_push(&line->cubes, cube);
 		} else {
 			*index += 1;
 		}
